@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Case Management System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 20px;
+        }
+        table {
+            width: 80%;
+            margin: 20px auto;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 10px;
+        }
+        .solved {
+            color: green;
+        }
+        .unsolved {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <h1>Case Management System</h1>
+    
+    <form action="/add" method="post">
+        <input type="text" name="description" placeholder="Enter case details" required>
+        <button type="submit">Report Case</button>
+    </form>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Description</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for case in cases %}
+            <tr>
+                <td>{{ case[0] }}</td>
+                <td>{{ case[1] }}</td>
+                <td class="{{ 'solved' if case[2] == 'Solved' else 'unsolved' }}">{{ case[2] }}</td>
+                <td>
+                    <a href="/update/{{ case[0] }}/Solved">Mark Solved</a> |
+                    <a href="/update/{{ case[0] }}/Unsolved">Mark Unsolved</a> |
+                    <a href="/delete/{{ case[0] }}" onclick="return confirm('Are you sure?')">Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

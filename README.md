@@ -1,45 +1,109 @@
-<<<<<<< HEAD
-# Women Safety Analytics
+# Women Safety Analytics System
 
-## Background
-The increasing concern for women's safety and the rise in crimes against women in various cities highlight the need for advanced surveillance and analytical solutions. Women Safety Analytics provides real-time threat detection software to address these issues and enhance safety for women in public spaces.
+## Overview
 
-## Detailed Description
-Women Safety Analytics leverages advanced real-time monitoring and analytics to create safer environments for women. It helps law enforcement by detecting anomalies and generating alerts to preempt potential incidents, thereby ensuring public safety.
+Women Safety Analytics System is an AI-powered safety monitoring and analytics platform designed to enhance women's security through intelligent detection, monitoring, and incident analysis. The system collects and processes safety-related information and provides actionable insights for improving personal security.
 
-Key functionalities include continuous monitoring of the scene to count the number of men and women present, providing insights into gender distribution at specific times and locations. The system identifies unusual patterns, such as a lone woman at night or gestures signaling distress, generating alerts to mitigate risks.
+## Features
 
-The software uses OpenCV for image processing, enabling detection of faces and gestures in real-time. A deep neural network (DNN) is employed for robust detection and classification tasks, ensuring the accuracy of the results.
+* User Registration and Authentication
+* Safety Incident Detection
+* Real-Time Monitoring
+* Data Analytics Dashboard
+* Database Management
+* Incident Record Storage
+* Safety Report Generation
+* Image-Based Analysis
+* Automated Detection Module
 
-## Tech Stack
-- Programming Language: Python
-- Libraries:
-    <p> - OpenCV: For real-time image processing and computer vision tasks.</p>
-    <p> - NumPy: For numerical operations and array manipulations.</p>
-- Deep Learning Framework:
-    <p> - OpenCV DNN Module: Used for face and hand detection by loading pre-trained models.</p>
-- Tools:
-    <p> - argparse: For command-line argument parsing to enable flexible execution of the software.</p>
-    <p> - Pre-trained Models: The system uses pre-trained models for face detection to reduce development time and increase accuracy.</p>
+## Technology Stack
 
-## Key Functionalities
-1. Person Detection with Gender Classification: Detect and classify the gender of individuals in the scene using pre-trained DNN models.
-2. Gender Distribution: Count the number of men and women present in the scene in real-time.
-3. Identifying a Lone Woman at Night: Detect scenarios where a lone woman is present during nighttime.
-4. Detection of a Woman Surrounded by Men: Identify situations where a woman is surrounded by men.
-5. Recognizing SOS Situations through Gesture Analytics: Analyze gestures to detect SOS signals.
-6. Identifying Hotspots: Detect areas more prone to incidents based on past alerts and activity patterns.
+### Programming Language
 
-## Code Overview
-The code utilizes OpenCV's DNN module for face and hand detection. Key functions include:
+* Python
 
-- highlightFace: Detects faces in the frame and highlights them using a bounding box.
-detectHands: Simplified gesture detection mechanism for analyzing potential SOS signals.
-Advantages of the System
-- Real-time Monitoring: The system provides instant detection and classification of gender and gestures.
-- Proactive Intervention: Early detection allows law enforcement to intervene before situations escalate.
-Insightful Analytics: Continuous analysis offers valuable data to identify hotspots and trends, supporting strategic planning for city safety.
-=======
-# Women_safety_analytic
-Women Safety Analytics System uses computer vision and machine learning to detect distress gestures in real time. It sends instant alerts via email/SMS using MediaPipe and TensorFlow, stores incident data in SQLite, and visualizes safety trends with charts to enhance women’s safety and awareness.
->>>>>>> 45f3b6884e4234eb91f21fec90e75a736b2ce094
+### Database
+
+* SQLite
+
+### Libraries
+
+* OpenCV
+* NumPy
+* Pandas
+* Tkinter (if used)
+* Other Python dependencies
+
+## Project Structure
+
+```text
+Women_safety_analytic/
+│
+├── module 1/
+│   ├── detect_1.py
+│   ├── women_safety.db
+│   └── screenshots/
+│
+├── README.md
+└── requirements.txt
+```
+
+## Installation
+
+### Clone Repository
+
+```bash
+git clone https://github.com/soham-5656/Women_safety_analytic.git
+cd Women_safety_analytic
+```
+
+### Create Virtual Environment
+
+```bash
+python -m venv .venv
+```
+
+### Activate Environment
+
+Windows:
+
+```bash
+.venv\Scripts\activate
+```
+
+### Install Dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+## Running the Project
+
+```bash
+python "module 1/detect_1.py"
+```
+
+## Applications
+
+* Personal Safety Monitoring
+* Smart Surveillance Systems
+* Security Analytics
+* Incident Tracking
+* Safety Awareness Programs
+
+## Future Enhancements
+
+* Mobile Application Integration
+* Live GPS Tracking
+* Emergency Alert System
+* AI-Based Threat Prediction
+* Cloud Database Support
+* Real-Time Notifications
+
+## Author
+
+Soham Dawale
+
+## License
+
+Developed for academic and educational purposes.

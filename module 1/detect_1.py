@@ -17,7 +17,7 @@ import queue
 # Email and Twilio Credentials
 EMAIL_ADDRESS = "sohamdawale@gmail.com"
 EMAIL_PASSWORD = "jkna pnyk ztzb glny"
-TO_EMAIL = "tkanse30@gmail.com"
+TO_EMAIL = ""
 
 TWILIO_ACCOUNT_SID = 'ACf23d449c6c23ab7ad7575f1b9c6fcbae'
 TWILIO_AUTH_TOKEN = "9a8172c794f564364b25a19c76a2f7a2"
@@ -57,7 +57,6 @@ if physical_devices:
 
 # Database Setup
 DB_FILE = "women_safety.db"
-FEMALE_THRESHOLD = 0  # Minimum females required to trigger an alert
 
 # Background task queue
 task_queue = queue.Queue()
@@ -179,7 +178,7 @@ def send_email_alert(men_count, women_count, screenshot_path):
         msg['Subject'] = "🚨 Emergency Alert!"
         msg['From'] = EMAIL_ADDRESS
         msg['To'] = TO_EMAIL
-        msg.set_content(f"ALERT! {men_count} men detected with {women_count} women. Immediate action required!")
+        msg.set_content(f"ALERT! {men_count} men & {women_count} women detected. Grabbing action identified!")
 
         if os.path.exists(screenshot_path):
             with open(screenshot_path, "rb") as file:
@@ -196,7 +195,7 @@ def make_call_alert(men_count, women_count):
     try:
         client = Client(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
         call = client.calls.create(
-            twiml=f'<Response><Say>Alert! {men_count} men detected with {women_count} women. Immediate action required.</Say></Response>',
+            twiml=f'<Response><Say>Emergency! {men_count} men and {women_count} women detected. Grabbing action identified. Immediate help needed.</Say></Response>',
             from_=TWILIO_PHONE_NUMBER,
             to=EMERGENCY_PHONE_NUMBER
         )
@@ -268,9 +267,8 @@ def real_time_detection():
                         grab_pred = grabbing_model.predict(input_data, verbose=0)[0]
                         beat_pred = beating_model.predict(input_data, verbose=0)[0]
 
-                        # Assuming binary classification with softmax output
-                        grab_confidence = float(grab_pred[1])  # Probability of "grabbing"
-                        beat_confidence = float(beat_pred[1])  # Probability of "beating"
+                        grab_confidence = float(grab_pred[1])
+                        beat_confidence = float(beat_pred[1])
                         latest_grab = ACTIONS[1 if grab_confidence > 0.5 else 0]
                         latest_beat = BEATING_ACTIONS[1 if beat_confidence > 0.5 else 0]
 
@@ -290,8 +288,8 @@ def real_time_detection():
                 print(f"Gender detection error: {e}")
 
             cv2.putText(frame, f"Males: {smoothed_male_count}, Females: {smoothed_female_count}", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 255, 0), 2, cv2.LINE_AA)
-            cv2.putText(frame, f"Grabbing: {latest_grab}", (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 0, 255), 2, cv2.LINE_AA)
-            cv2.putText(frame, f"Beating: {latest_beat}", (10, 90), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 0, 255), 2, cv2.LINE_AA)
+            cv2.putText(frame, f"Grabbing: {latest_grab} ({grab_confidence*100:.1f}%)", (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 0, 255), 2, cv2.LINE_AA)
+            cv2.putText(frame, f"Beating: {latest_beat} ({beat_confidence*100:.1f}%)", (10, 90), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 0, 255), 2, cv2.LINE_AA)
             cv2.putText(frame, f"FPS: {current_fps}", (10, 120), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (255, 0, 0), 2, cv2.LINE_AA)
 
             try:
@@ -306,15 +304,22 @@ def real_time_detection():
                 break
 
             current_time = time.time()
-            if (smoothed_male_count > 0 and smoothed_female_count > 0 and
-                    (latest_grab == "grabbing" or latest_beat == "beating") and
-                    (current_time - last_alert_time >= 10)):
+
+            # Updated alert condition: Grabbing very high confidence + at least 1 female + at least 1 male
+            if (grab_confidence >= 0.999 and
+                smoothed_female_count >= 1 and
+                smoothed_male_count >= 1 and
+                current_time - last_alert_time >= 15):
+
                 last_alert_time = current_time
                 screenshot_path = capture_screenshot(frame)
+
                 task_queue.put((register_case, (smoothed_male_count, smoothed_female_count, screenshot_path, "12.9716,77.5946")))
                 task_queue.put((send_email_alert, (smoothed_male_count, smoothed_female_count, screenshot_path)))
                 task_queue.put((make_call_alert, (smoothed_male_count, smoothed_female_count)))
-                print(f"🚨 Alert Triggered at {datetime.datetime.now()} 🚨")
+
+                print(f"🚨 ALERT TRIGGERED at {datetime.datetime.now()} "
+                      f"(Grab {grab_confidence*100:.1f}% + {smoothed_male_count} male(s) + {smoothed_female_count} female(s)) 🚨")
 
             cv2.imshow("Action & Threat Detection", frame)
             if cv2.waitKey(1) & 0xFF == ord('q'):
